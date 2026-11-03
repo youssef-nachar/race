@@ -8,14 +8,22 @@ const keys={};let lastFrame=performance.now(),audioCtx=null;
 const track={cx:0,cy:0,rx:Math.min(innerWidth,innerHeight)*.34,ry:Math.min(innerWidth,innerHeight)*.24};
 function resize(){const d=Math.min(devicePixelRatio||1,2);canvas.width=innerWidth*d;canvas.height=innerHeight*d;ctx.setTransform(d,0,0,d,0,0);track.cx=innerWidth/2;track.cy=innerHeight/2;track.rx=Math.min(innerWidth,innerHeight)*.34;track.ry=Math.min(innerWidth,innerHeight)*.24}
 addEventListener('resize',resize);resize();
-function status(text,good=false){document.querySelector('#host-status').textContent=text;document.querySelector('#connection-pill').textContent=good?'● ONLINE':'● CONNECTING';document.querySelector('#connection-pill').style.color=good?'#c8ff4d':'#ffcf65'}
-peer.on('open',id=>{status('Room is live — waiting for drivers',true);const url=new URL('./controller.html',location.href);url.searchParams.set('room',id);new QRCode(document.querySelector('#qrcode'),{text:url.href,width:118,height:118});document.querySelector('#copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(url.href);status('Invite link copied!',true)}catch{prompt('Copy invite link:',url.href)}}});
+function status(text,good=false){
+ const hs=document.querySelector('#host-status'); if(hs) hs.textContent=text;
+ const cp=document.querySelector('#connection-pill'); if(cp){cp.textContent=good?'● ONLINE':'● CONNECTING';cp.style.color=good?'#c8ff4d':'#ffcf65';}
+}
+peer.on('open',id=>{status('Room is live — waiting for drivers',true);const url=new URL('./controller.html',location.href);url.searchParams.set('room',id);const qrEl=document.querySelector('#qrcode');if(qrEl&&typeof QRCode!=='undefined')new QRCode(qrEl,{text:url.href,width:118,height:118});document.querySelector('#copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(url.href);status('Invite link copied!',true)}catch{prompt('Copy invite link:',url.href)}}});
 peer.on('error',e=>status('Network error: '+e.type));
 peer.on('connection',conn=>{if(players.size>=8){conn.on('open',()=>conn.send({type:'full'}));conn.close();return}
 const colors=['#59f4ff','#ff4fc8','#c8ff4d','#ffb84d','#9b85ff','#ff647c','#4dffb8','#f3f4ff'];
 const p={id:conn.peer,name:'DRIVER '+(players.size+1),color:colors[players.size%colors.length],x:track.cx+(Math.random()-.5)*70,y:track.cy+track.ry,angle:-Math.PI/2,speed:0,input:{},lap:0,checkpoint:0,finishTime:null,boost:100};
 players.set(conn.peer,p);conn.on('open',()=>conn.send({type:'init',color:p.color,name:p.name}));conn.on('data',data=>{if(!data||typeof data!=='object')return;if(data.type==='input')p.input=data.input||{};if(data.type==='name'&&typeof data.name==='string')p.name=data.name.slice(0,14)});conn.on('close',()=>{players.delete(conn.peer);refreshList()});refreshList();});
-function refreshList(){const list=document.querySelector('#players-list');list.innerHTML=[...players.values()].map(p=>`<span style="color:${p.color}">●</span> ${escapeHTML(p.name)}`).join('　');document.querySelector('#bottom-hint').textContent=players.size?`${players.size} DRIVER${players.size===1?'':'S'} CONNECTED • GET READY`:'WAITING FOR DRIVERS ✦ CONNECT A PHONE TO START';}
+function refreshList(){
+  const list=document.querySelector('#players-list');
+  if(list) list.innerHTML=[...players.values()].map(p=>`<span style="color:${p.color}">●</span> ${escapeHTML(p.name)}`).join('　');
+  const hint=document.querySelector('#bottom-hint');
+  if(hint) hint.textContent=players.size?`${players.size} DRIVER${players.size===1?'':'S'} CONNECTED • GET READY`:'WAITING FOR DRIVERS ✦ CONNECT A PHONE TO START';
+}
 function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function countdown(){raceStarted=true;document.querySelector('#race-hud').hidden=false;document.querySelector('#lobby').hidden=true;const el=document.querySelector('#race-message');let n=3;el.textContent=n;const t=setInterval(()=>{n--;if(n>0)el.textContent=n;else{clearInterval(t);el.textContent='GO!';startedAt=performance.now();setTimeout(()=>el.textContent='',1000)}},750)}
 const startGameBtn=document.querySelector('#start-game-btn');
