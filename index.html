@@ -1,28 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TV Screen - Racing Game (No Server)</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <title>Neon Circuit • Multiplayer</title>
     <link rel="stylesheet" href="./style.css">
-    <!-- QR Code Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- PeerJS for WebRTC (No Backend Required) -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
-<body>
-    <div id="ui-layer">
-        <h1>Multiplayer Racing</h1>
-        <div id="join-info">
-            <p>Scan to join or open <span style="color:yellow;">controller.html</span></p>
-            <h2>Room Code: <span id="room-code">Loading...</span></h2>
-            <div id="qrcode"></div>
-        </div>
-        <div id="players-list"></div>
-    </div>
-    
-    <canvas id="gameCanvas"></canvas>
 
+<body class="host">
+    <canvas id="gameCanvas"></canvas>
+    <div class="hud">
+        <header>
+            <div class="brand"><span class="brand-mark">◆</span>
+                <div><strong>NEON CIRCUIT</strong><small>LOCAL MULTIPLAYER</small></div>
+            </div>
+            <div class="top-actions"><span id="connection-pill" class="pill">● CONNECTING</span><button id="pause-btn"
+                    class="icon-btn" title="Pause">Ⅱ</button><button id="sound-btn" class="icon-btn"
+                    title="Toggle sound">♫</button></div>
+        </header>
+        <section class="lobby glass" id="lobby">
+            <div class="eyebrow">READY TO RACE?</div>
+            <h1>Bring your<br><em>crew.</em></h1>
+            <p>Scan the QR code with each phone to turn it into a controller.</p>
+            <div class="join-grid">
+                <div id="qrcode" class="qr"></div>
+                <div>
+                    <div class="label">ROOM CODE</div>
+                    <div id="room-code" class="room-code">Generating…</div>
+                    <div id="host-status" class="status">Starting connection…</div><button id="copy-link"
+                        class="secondary">COPY INVITE LINK ↗</button>
+                </div>
+                <div class="lobby-footer"><span>UP TO 8 DRIVERS</span><span>WASD / ARROWS ALSO WORK</span></div>
+        </section>
+        <section class="race-hud" id="race-hud" hidden>
+            <div class="race-title"><span class="eyebrow">LAP <b id="lap">1</b> / 3</span><strong
+                    id="timer">00:00.0</strong></div>
+            <div id="leaderboard" class="leaderboard"></div>
+            <div class="race-message" id="race-message">3 • 2 • 1 • GO!</div>
+        </section>
+        <div class="bottom-hint" id="bottom-hint">WAITING FOR DRIVERS <span>✦</span> CONNECT A PHONE TO START</div>
+    </div>
     <script src="./game.js"></script>
 </body>
+
 </html>
