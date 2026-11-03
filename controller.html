@@ -1,36 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Game Controller</title>
+    <meta charset="utf-8">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="theme-color" content="#090b18">
+    <title>Neon Circuit Controller</title>
     <link rel="stylesheet" href="./style.css">
-    <!-- PeerJS for WebRTC -->
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 </head>
+
 <body class="controller-body">
-    
-    <div id="join-screen">
-        <h2>Enter Room Code</h2>
-        <input type="text" id="room-input" placeholder="e.g. RACE-1234">
-        <button id="join-btn">JOIN GAME</button>
-        <p id="status-msg"></p>
-    </div>
-
-    <div id="gamepad" style="display: none;">
-        <div class="color-indicator" id="my-color">Your Car</div>
-        <div class="controls">
-            <div class="steer-buttons">
-                <button id="btn-left" class="control-btn">LEFT</button>
-                <button id="btn-right" class="control-btn">RIGHT</button>
-            </div>
-            <div class="action-buttons">
-                <button id="btn-accel" class="control-btn accel">ACCEL</button>
-                <button id="btn-brake" class="control-btn brake">BRAKE</button>
-            </div>
+    <main id="join-screen" class="join-screen">
+        <div class="brand"><span class="brand-mark">◆</span>
+            <div><strong>NEON CIRCUIT</strong><small>PLAYER CONTROLLER</small></div>
         </div>
-    </div>
-
+        <h1>Join the<br><em>race.</em></h1>
+        <p>Enter the room code displayed on the big screen.</p><input id="room-input" autocomplete="off"
+            autocapitalize="characters" maxlength="40" placeholder="RACE-1234"><button id="join-btn"
+            class="primary">CONNECT TO GAME <span>↗</span></button>
+        <p id="status-msg" class="status">Ready when you are.</p>
+    </main>
+    <section id="gamepad" class="controller" hidden>
+        <header>
+            <div class="brand"><span class="brand-mark">◆</span>
+                <div><strong>NEON CIRCUIT</strong><small>CONNECTED DRIVER</small></div>
+            </div>
+            <div id="my-color" class="driver-chip">DRIVER</div>
+        </header>
+        <div class="mobile-status" id="mobile-status">CONNECTION STABLE</div>
+        <div class="control-layout">
+            <div class="steering"><button id="btn-left" class="steer control-btn"
+                    aria-label="Steer left">◀</button><button id="btn-right" class="steer control-btn"
+                    aria-label="Steer right">▶</button></div>
+            <div class="pedals"><button id="btn-brake"
+                    class="pedal brake control-btn"><span>▼</span><small>BRAKE</small></button><button id="btn-accel"
+                    class="pedal accel control-btn"><span>▲</span><small>ACCELERATE</small></button></div>
+        </div>
+        <footer>HOLD TO DRIVE <span>•</span> RELEASE TO COAST</footer>
+    </section>
     <script src="./controller.js"></script>
 </body>
+
 </html>
