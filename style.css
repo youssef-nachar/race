@@ -1,0 +1,527 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #080a14;
+    --panel: rgba(14, 18, 37, .88);
+    --line: rgba(160, 174, 255, .18);
+    --cyan: #59f4ff;
+    --pink: #ff4fc8;
+    --lime: #c8ff4d;
+    --white: #f5f7ff;
+    --muted: #9ba4c5
+}
+
+* {
+    box-sizing: border-box
+}
+
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--white);
+    font-family: Inter, system-ui, sans-serif
+}
+
+button,
+input {
+    font: inherit
+}
+
+button {
+    cursor: pointer;
+    touch-action: manipulation
+}
+
+#gameCanvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block
+}
+
+.host .hud {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    padding: clamp(14px, 3vw, 36px);
+    display: flex;
+    flex-direction: column
+}
+
+.hud header,
+.controller header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    pointer-events: auto
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.brand-mark {
+    font-size: 28px;
+    color: var(--cyan);
+    text-shadow: 0 0 18px #59f4ff88
+}
+
+.brand strong {
+    font: 700 14px Orbitron, sans-serif;
+    letter-spacing: 2px;
+    display: block
+}
+
+.brand small {
+    display: block;
+    color: var(--muted);
+    font: 600 9px Inter, sans-serif;
+    letter-spacing: 2px;
+    margin-top: 5px
+}
+
+.top-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.pill {
+    border: 1px solid var(--line);
+    border-radius: 50px;
+    padding: 9px 13px;
+    font: 700 9px Orbitron;
+    letter-spacing: 1px;
+    color: var(--lime)
+}
+
+.icon-btn {
+    background: #151a31;
+    border: 1px solid var(--line);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%
+}
+
+.glass {
+    background: linear-gradient(145deg, rgba(17, 21, 43, .95), rgba(8, 10, 22, .89));
+    border: 1px solid var(--line);
+    box-shadow: 0 22px 80px #0008, inset 0 1px #ffffff08;
+    backdrop-filter: blur(16px)
+}
+
+.lobby {
+    pointer-events: auto;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(510px, calc(100vw - 32px));
+    padding: clamp(24px, 5vw, 42px);
+    border-radius: 24px
+}
+
+.eyebrow,
+.label {
+    font: 700 10px Orbitron, sans-serif;
+    letter-spacing: 2px;
+    color: var(--cyan)
+}
+
+h1 {
+    font: 800 clamp(40px, 7vw, 66px)/.98 Inter, sans-serif;
+    letter-spacing: -3px;
+    margin: 14px 0
+}
+
+h1 em {
+    font-style: normal;
+    color: var(--pink)
+}
+
+.lobby p,
+.join-screen>p {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.65
+}
+
+.join-grid {
+    display: flex;
+    gap: 22px;
+    align-items: center;
+    margin: 25px 0
+}
+
+.qr {
+    width: 132px;
+    height: 132px;
+    background: #fff;
+    padding: 7px;
+    border-radius: 12px;
+    flex-shrink: 0
+}
+
+.qr img {
+    width: 100%;
+    height: 100%
+}
+
+.room-code {
+    font: 700 24px Orbitron;
+    letter-spacing: 1px;
+    margin: 8px 0
+}
+
+.status {
+    font-size: 11px;
+    color: var(--lime);
+    min-height: 16px
+}
+
+.secondary {
+    border: 1px solid #3d4569;
+    background: #1a203c;
+    color: #dce3ff;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .7px;
+    margin-top: 8px
+}
+
+.lobby-footer {
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    color: #727c9f;
+    font: 700 8px Orbitron;
+    letter-spacing: 1px
+}
+
+.bottom-hint {
+    margin-top: auto;
+    text-align: center;
+    color: #a3abc5;
+    font: 700 10px Orbitron;
+    letter-spacing: 2px
+}
+
+.bottom-hint span {
+    color: var(--pink);
+    padding: 0 10px
+}
+
+.race-hud {
+    position: absolute;
+    right: clamp(14px, 3vw, 36px);
+    top: 95px;
+    width: 220px;
+    pointer-events: none
+}
+
+.race-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.race-title strong {
+    font: 700 18px Orbitron
+}
+
+.leaderboard {
+    margin-top: 12px;
+    background: #0b0f20bb;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px
+}
+
+.leader-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 0;
+    font-size: 11px
+}
+
+.leader-row .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%
+}
+
+.leader-row .place {
+    color: #8992b5;
+    width: 16px
+}
+
+.leader-row .name {
+    flex: 1
+}
+
+.leader-row .score {
+    font: 700 10px Orbitron
+}
+
+.race-message {
+    font: 800 30px Orbitron;
+    color: var(--lime);
+    text-shadow: 0 0 22px #c8ff4d88;
+    margin-top: 20px;
+    text-align: center
+}
+
+.controller-body {
+    background: radial-gradient(ellipse at 50% 0, #182244 0%, #090b18 65%);
+    min-height: 100dvh;
+    padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+    touch-action: none
+}
+
+.join-screen {
+    width: min(440px, 100%);
+    margin: 0 auto;
+    padding: clamp(28px, 8vh, 70px) 0
+}
+
+.join-screen h1 {
+    font-size: clamp(52px, 12vw, 78px);
+    margin-top: 55px
+}
+
+.join-screen input {
+    width: 100%;
+    margin: 22px 0 12px;
+    background: #10162b;
+    border: 1px solid #333c60;
+    border-radius: 12px;
+    padding: 18px;
+    color: white;
+    text-align: center;
+    font: 700 20px Orbitron;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    outline: none
+}
+
+.join-screen input:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px #59f4ff15
+}
+
+.primary {
+    width: 100%;
+    border: 0;
+    border-radius: 12px;
+    padding: 18px;
+    background: linear-gradient(90deg, #50e9ff, #a0f8ff);
+    color: #07101c;
+    font: 800 12px Orbitron;
+    letter-spacing: 1px
+}
+
+.primary span {
+    float: right;
+    font-size: 18px;
+    margin-top: -4px
+}
+
+.controller {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    padding: 18px 0 10px
+}
+
+.driver-chip {
+    font: 700 10px Orbitron;
+    border: 1px solid var(--line);
+    padding: 9px 12px;
+    border-radius: 30px
+}
+
+.mobile-status {
+    text-align: center;
+    font: 700 9px Orbitron;
+    letter-spacing: 2px;
+    color: var(--lime);
+    margin: 20px 0
+}
+
+.control-layout {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    max-height: calc(100dvh - 150px)
+}
+
+.steering {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px
+}
+
+.control-btn {
+    border: 1px solid #ffffff22;
+    color: white;
+    user-select: none;
+    -webkit-user-select: none;
+    outline: none;
+    transition: transform .06s, filter .06s
+}
+
+.control-btn.active {
+    transform: scale(.96);
+    filter: brightness(1.5)
+}
+
+.steer {
+    width: min(38vw, 150px);
+    height: min(38vw, 150px);
+    border-radius: 50%;
+    font-size: clamp(40px, 12vw, 70px);
+    background: linear-gradient(145deg, #242c4b, #11162b);
+    box-shadow: 0 10px 28px #0005, inset 0 2px #ffffff12
+}
+
+.pedals {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 14px;
+    height: min(32vh, 190px)
+}
+
+.pedal {
+    flex: 1;
+    border-radius: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px
+}
+
+.pedal span {
+    font-size: 38px
+}
+
+.pedal small {
+    font: 800 10px Orbitron;
+    letter-spacing: 1px
+}
+
+.brake {
+    background: linear-gradient(150deg, #3b1931, #1c1122);
+    border-color: #ff4fc844;
+    color: #ff8cda
+}
+
+.accel {
+    background: linear-gradient(150deg, #1b3a36, #10231f);
+    border-color: #c8ff4d55;
+    color: var(--lime)
+}
+
+.controller footer {
+    text-align: center;
+    color: #77809f;
+    font: 700 9px Orbitron;
+    letter-spacing: 1px;
+    padding: 12px
+}
+
+.controller footer span {
+    color: var(--pink);
+    padding: 0 8px
+}
+
+@media(max-height:650px) {
+    .controller {
+        padding-top: 8px
+    }
+
+    .mobile-status {
+        margin: 8px 0
+    }
+
+    .control-layout {
+        max-height: calc(100dvh - 110px)
+    }
+
+    .steer {
+        width: min(28vw, 110px);
+        height: min(28vw, 110px)
+    }
+
+    .pedals {
+        height: 26vh
+    }
+
+    .join-screen {
+        padding-top: 24px
+    }
+
+    .join-screen h1 {
+        margin-top: 24px
+    }
+}
+
+@media(max-width:600px) {
+    .lobby {
+        top: 48%
+    }
+
+    .host .hud {
+        padding: 16px
+    }
+
+    .bottom-hint {
+        font-size: 8px;
+        letter-spacing: 1px
+    }
+
+    .race-hud {
+        top: 80px;
+        right: 12px;
+        width: 170px
+    }
+
+    .race-title strong {
+        font-size: 14px
+    }
+
+    .leaderboard {
+        padding: 8px
+    }
+
+    .join-grid {
+        gap: 14px
+    }
+
+    .qr {
+        width: 108px;
+        height: 108px
+    }
+
+    .room-code {
+        font-size: 19px
+    }
+
+    .lobby-footer {
+        font-size: 7px
+    }
+}
