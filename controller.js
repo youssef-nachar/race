@@ -1,97 +1,11 @@
-const joinBtn = document.getElementById('join-btn');
-const roomInput = document.getElementById('room-input');
-const statusMsg = document.getElementById('status-msg');
-const joinScreen = document.getElementById('join-screen');
-const gamepad = document.getElementById('gamepad');
-const myColorInfo = document.getElementById('my-color');
-
-let peer = null;
-let conn = null;
-let inputState = { accel: false, brake: false, left: false, right: false };
-
-// Check if room code is in URL (from QR code scan)
-const urlParams = new URLSearchParams(window.location.search);
-if(urlParams.has('room')) {
-    roomInput.value = urlParams.get('room');
-}
-
-joinBtn.addEventListener('click', () => {
-    const roomId = roomInput.value.trim().toUpperCase();
-    if(roomId) {
-        statusMsg.innerText = 'Connecting...';
-        statusMsg.style.color = 'yellow';
-        
-        // Initialize PeerJS for the controller
-        peer = new Peer(); 
-        
-        peer.on('open', (id) => {
-            // Connect to the Main Screen (Host)
-            conn = peer.connect(roomId);
-            
-            conn.on('open', () => {
-                statusMsg.innerText = 'Connected!';
-                statusMsg.style.color = '#00ff88';
-                
-                // Wait for the host to send our assigned color
-                conn.on('data', (data) => {
-                    if(data.type === 'init') {
-                        joinScreen.style.display = 'none';
-                        gamepad.style.display = 'flex';
-                        myColorInfo.style.backgroundColor = data.color;
-                        
-                        // Try to lock orientation and go fullscreen on mobile
-                        try {
-                            document.documentElement.requestFullscreen();
-                            screen.orientation.lock('landscape');
-                        } catch(e) {}
-                    }
-                });
-            });
-
-            conn.on('error', (err) => {
-                statusMsg.innerText = 'Connection Error!';
-                statusMsg.style.color = 'red';
-            });
-            
-            conn.on('close', () => {
-                alert('Connection to TV lost.');
-                location.reload();
-            });
-        });
-        
-        peer.on('error', (err) => {
-            statusMsg.innerText = 'Failed to find room.';
-            statusMsg.style.color = 'red';
-            console.error(err);
-        });
-    }
-});
-
-// Button event listeners
-const setupButton = (id, action) => {
-    const btn = document.getElementById(id);
-    
-    // Touch events for mobile
-    btn.addEventListener('touchstart', (e) => { e.preventDefault(); updateInput(action, true); });
-    btn.addEventListener('touchend', (e) => { e.preventDefault(); updateInput(action, false); });
-    
-    // Mouse events for testing on desktop
-    btn.addEventListener('mousedown', () => updateInput(action, true));
-    btn.addEventListener('mouseup', () => updateInput(action, false));
-    btn.addEventListener('mouseleave', () => updateInput(action, false));
-};
-
-setupButton('btn-accel', 'accel');
-setupButton('btn-brake', 'brake');
-setupButton('btn-left', 'left');
-setupButton('btn-right', 'right');
-
-// Send input data via WebRTC DataChannel
-function updateInput(action, state) {
-    if (inputState[action] !== state) {
-        inputState[action] = state;
-        if(conn && conn.open) {
-            conn.send({ type: 'input', input: inputState });
-        }
-    }
-}
+const joinBtn=document.querySelector('#join-btn'),roomInput=document.querySelector('#room-input'),statusMsg=document.querySelector('#status-msg'),joinScreen=document.querySelector('#join-screen'),gamepad=document.querySelector('#gamepad'),colorInfo=document.querySelector('#my-color');
+let peer=null,conn=null,connected=false;const inputState={accel:false,brake:false,left:false,right:false};
+const params=new URLSearchParams(location.search);if(params.has('room'))roomInput.value=params.get('room');
+function setStatus(text,color='#aab3d0'){statusMsg.textContent=text;statusMsg.style.color=color}
+joinBtn.addEventListener('click',connect);roomInput.addEventListener('keydown',e=>{if(e.key==='Enter')connect()});
+function connect(){const room=roomInput.value.trim().toUpperCase();if(!room)return setStatus('Enter a room code first.','#ff8cda');joinBtn.disabled=true;joinBtn.textContent='CONNECTING…';setStatus('Finding your game…','#ffcf65');peer=new Peer(undefined,{debug:1});peer.on('open',()=>{conn=peer.connect(room,{reliable:true});conn.on('open',()=>setStatus('Connected — waiting for assignment','#59f4ff'));conn.on('data',data=>{if(data.type==='init'){connected=true;joinScreen.hidden=true;gamepad.hidden=false;colorInfo.style.color=data.color;colorInfo.style.borderColor=data.color;colorInfo.textContent=data.name||'DRIVER';setStatus('Driver connected','#c8ff4d');try{if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});if(screen.orientation?.lock)screen.orientation.lock('landscape').catch(()=>{})}catch{}}if(data.type==='full')setStatus('Room is full (8 drivers max).','#ff8cda')});conn.on('close',()=>{connected=false;setStatus('Host disconnected. Rejoin the room.','#ff8cda');gamepad.hidden=true;joinScreen.hidden=false;joinBtn.disabled=false;joinBtn.textContent='CONNECT TO GAME'})});peer.on('error',e=>{setStatus(e.type==='peer-unavailable'?'Room not found. Check the code.':'Connection failed. Try again.','#ff647c');joinBtn.disabled=false;joinBtn.textContent='TRY AGAIN'})}
+function send(){if(conn&&conn.open)conn.send({type:'input',input:{...inputState}})}
+function setup(id,action){const btn=document.getElementById(id);const down=e=>{e.preventDefault();if(!inputState[action]){inputState[action]=true;btn.classList.add('active');send()}};const up=e=>{e.preventDefault();if(inputState[action]){inputState[action]=false;btn.classList.remove('active');send()}};
+btn.addEventListener('pointerdown',down);btn.addEventListener('pointerup',up);btn.addEventListener('pointercancel',up);btn.addEventListener('pointerleave',e=>{if(e.buttons===0)up(e)});btn.addEventListener('contextmenu',e=>e.preventDefault())}
+setup('btn-accel','accel');setup('btn-brake','brake');setup('btn-left','left');setup('btn-right','right');
+addEventListener('pagehide',()=>{for(const k in inputState)inputState[k]=false;send()});
