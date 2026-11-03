@@ -525,3 +525,13 @@ h1 em {
         font-size: 7px
     }
 }
+
+.start-game {
+    margin-top: 12px;
+    background: linear-gradient(90deg, #ff4fc8, #ff9ce1);
+    color: #190817
+}
+
+#lobby[hidden] {
+    display: none !important
+}
