@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --bg: #080a14;
+    --bg: #0f1218;
     --panel: rgba(14, 18, 37, .88);
     --line: rgba(160, 174, 255, .18);
     --cyan: #59f4ff;
@@ -284,7 +284,7 @@ h1 em {
 }
 
 .controller-body {
-    background: radial-gradient(ellipse at 50% 0, #182244 0%, #090b18 65%);
+    background: radial-gradient(ellipse at 50% 0, #182244 0%, #0f1218 65%);
     min-height: 100dvh;
     padding: env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
     touch-action: none
@@ -534,4 +534,22 @@ h1 em {
 
 #lobby[hidden] {
     display: none !important
+}
+
+/* 3D edition polish */
+#gameCanvas { z-index: 0; }
+.host .hud { z-index: 2; }
+.host { background: #9bc9e7; }
+.host .hud header { text-shadow: 0 2px 12px #14243288; }
+.lobby {
+  background: linear-gradient(145deg, rgba(11,22,38,.94), rgba(14,29,42,.88));
+  border-color: rgba(208,235,255,.28);
+  box-shadow: 0 24px 90px #07152266, inset 0 1px #ffffff1c;
+}
+.pill { background: rgba(12,24,35,.72); backdrop-filter: blur(10px); }
+.race-hud { z-index: 3; }
+.leaderboard { background: rgba(10,22,31,.78); backdrop-filter: blur(12px); }
+.bottom-hint { text-shadow: 0 2px 10px #142432; }
+@media(max-width:600px) {
+  .lobby { max-height: calc(100dvh - 120px); overflow: auto; }
 }
